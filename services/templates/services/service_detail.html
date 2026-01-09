@@ -1,0 +1,14 @@
+{% extends 'services/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title">{{ service.title }}</h2>
+            <p class="card-text mt-3">{{ service.description }}</p>
+
+            <a href="/" class="btn btn-secondary mt-3">← Back to Services</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

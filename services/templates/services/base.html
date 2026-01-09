@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>{% block title %}Trugene – Trusted Diagnostic & Healthcare Services{% endblock %}</title>
+
+    <meta name="description" content="TruGene provides trusted diagnostic and healthcare services with accuracy and care.">
+    <meta name="keywords" content="TruGene, diagnostics, healthcare, pathology, lab services">
+    <meta name="author" content="TruGene">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'services/favicon.ico' %}">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Trugene – Trusted Diagnostic & Healthcare Services">
+    <meta property="og:description" content="Accurate, reliable diagnostic and healthcare services you can trust.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://127.0.0.1:8000/">
+    <meta property="og:image" content="https://via.placeholder.com/1200x630.png?text=Trugene">
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Trugene</a>
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if '/contact' in request.path %}active{% endif %}" href="/contact/">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+{% block content %}
+{% endblock %}
+
+<footer class="bg-dark text-light mt-5">
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Trugene</h5>
+                <p>Trusted diagnostic and healthcare services.</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p>Email: info@trugene.com</p>
+                <p>Phone: +91 98765 43210</p>
+            </div>
+        </div>
+        <hr class="border-secondary">
+        <p class="text-center mb-0">© 2026 Trugene. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
