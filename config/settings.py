@@ -25,10 +25,12 @@ SECRET_KEY = 'django-insecure-7pr!4403bhixzta(f=#810u+jofxey)5-prkofrvh%*vx!p@u)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    'trugene-django.onrender.com'
-]
+ALLOWED_HOSTS = ["*"]
 
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://trugene-django.onrender.com",
+]
 
 
 
