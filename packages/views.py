@@ -1,6 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import random
+import hmac
+import hashlib
+import json
 
 from .models import HealthPackage, Booking
 from tests.models import MobileOTP
@@ -60,7 +65,7 @@ def book_package(request, package_id):
 
 
 # =========================
-# VERIFY OTP (HARD BIND)
+# VERIFY OTP
 # =========================
 def verify_otp(request):
     phone = request.session.get('phone')
@@ -79,11 +84,10 @@ def verify_otp(request):
             'error': 'OTP expired. Please resend.'
         })
 
-    # ❌ Max attempts reached
     if otp_obj.attempt_count >= settings.OTP_MAX_ATTEMPTS:
         MobileOTP.objects.filter(mobile=phone).delete()
         return render(request, 'packages/verify_otp.html', {
-            'error': 'Too many wrong attempts. OTP blocked.'
+            'error': 'Too many wrong attempts.'
         })
 
     if request.method == "POST":
@@ -96,18 +100,12 @@ def verify_otp(request):
                 'error': 'Invalid OTP'
             })
 
-        # ✅ OTP SUCCESS
-        booking = get_object_or_404(
-            Booking,
-            id=booking_id,
-            is_verified=False
-        )
+        booking = get_object_or_404(Booking, id=booking_id)
         booking.is_verified = True
         booking.save()
 
         MobileOTP.objects.filter(mobile=phone).delete()
 
-        # IMPORTANT: Do NOT flush full session yet
         return redirect('packages:payment_pending', booking_id=booking.id)
 
     return render(request, 'packages/verify_otp.html')
@@ -162,24 +160,63 @@ def payment_pending(request, booking_id):
 
 
 # =========================
-# PAYMENT SUCCESS
+# PAYMENT SUCCESS (TEMP)
 # =========================
 def payment_success(request, booking_id):
     booking = get_object_or_404(Booking, id=booking_id)
-
     booking.payment_status = "paid"
-    booking.payment_reference = "DUMMY_REF_123"
+    booking.payment_reference = "MANUAL_SUCCESS"
     booking.save()
 
-    # Clear session AFTER payment
     request.session.flush()
-
     return redirect("packages:booking_success")
 
 
 # =========================
-# SUCCESS
+# BOOKING SUCCESS
 # =========================
 def booking_success(request):
     return render(request, 'packages/booking_success.html')
 
+
+# =========================
+# RAZORPAY WEBHOOK
+# =========================
+@csrf_exempt
+def razorpay_webhook(request):
+    webhook_secret = settings.RAZORPAY_WEBHOOK_SECRET
+
+    payload = request.body
+    signature = request.headers.get("X-Razorpay-Signature")
+
+    if not signature:
+        return HttpResponse("Missing signature", status=400)
+
+    generated_signature = hmac.new(
+        webhook_secret.encode(),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(generated_signature, signature):
+        return HttpResponse("Invalid signature", status=400)
+
+    data = json.loads(payload.decode("utf-8"))
+    event = data.get("event")
+
+    if event == "payment.captured":
+        payment = data["payload"]["payment"]["entity"]
+        booking_id = payment.get("notes", {}).get("booking_id")
+
+        if booking_id:
+            try:
+                booking = Booking.objects.get(id=booking_id)
+                booking.payment_status = "paid"
+                booking.payment_reference = payment["id"]
+                booking.save()
+            except Booking.DoesNotExist:
+                pass
+        else:
+            print("⚠️ payment.captured आया लेकिन booking_id नहीं मिला")
+
+    return HttpResponse("OK", status=200)
