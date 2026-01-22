@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- BASIC SEO -->
+    <title>{% block title %}Trugene | Diagnostic Test Booking{% endblock %}</title>
+    <meta name="description" content="Book diagnostic tests & health checkup packages online. Home sample collection through trusted partner labs.">
+    <meta name="keywords" content="diagnostic tests, blood test, health checkup, lab test booking, home sample collection">
+    <meta name="author" content="Trugene">
+    <meta name="robots" content="index, follow">
+
+    <!-- MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- OPEN GRAPH (SOCIAL SHARE) -->
+    <meta property="og:title" content="Trugene | Diagnostic Test Booking">
+    <meta property="og:description" content="Easy & secure diagnostic test booking with home sample collection.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://127.0.0.1:8000/">
+    <meta property="og:image" content="{% static 'images/slide1.png' %}">
+
+    <!-- PERFORMANCE: FONT PRELOAD -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- INLINE CSS (FASTEST) -->
+    <style>
+        body{
+            margin:0;
+            font-family:'Inter', sans-serif;
+            background:#f7f9fc;
+            color:#222;
+        }
+
+        nav{
+            padding:14px 16px;
+            background:#111;
+            color:#fff;
+            font-weight:600;
+            font-size:16px;
+        }
+
+        /* HERO */
+        .hero-slider{
+            position:relative;
+            width:100%;
+            height:65vh;
+            overflow:hidden;
+        }
+
+        .hero-slide{
+            position:absolute;
+            inset:0;
+            background-size:cover;
+            background-position:center;
+            opacity:0;
+            transition:opacity 1s ease;
+        }
+
+        .hero-slide.active{
+            opacity:1;
+        }
+
+        .hero-slide::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:rgba(0,0,0,.55);
+        }
+
+        .hero-content{
+            position:absolute;
+            top:50%;
+            left:6%;
+            transform:translateY(-50%);
+            color:#fff;
+            max-width:520px;
+            z-index:2;
+        }
+
+        .hero-content h1{
+            font-size:2.6rem;
+            line-height:1.2;
+            margin-bottom:10px;
+        }
+
+        .hero-content p{
+            font-size:1.05rem;
+            margin-bottom:18px;
+        }
+
+        .hero-content a{
+            display:inline-block;
+            padding:12px 26px;
+            background:#0d6efd;
+            color:#fff;
+            text-decoration:none;
+            border-radius:8px;
+            font-weight:600;
+        }
+
+        footer{
+            margin-top:60px;
+            background:#0f172a;
+            color:#cbd5e1;
+            padding:30px 16px 16px;
+            font-size:13px;
+            text-align:center;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav>Trugene</nav>
+
+{% block content %}{% endblock %}
+
+<footer>
+    © 2026 Trugene. We facilitate your test through partner laboratories.
+</footer>
+
+<!-- PERFORMANCE: INLINE JS (NO BLOCKING) -->
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    const slides = document.querySelectorAll(".hero-slide");
+    let i = 0;
+    setInterval(function(){
+        slides[i].classList.remove("active");
+        i = (i + 1) % slides.length;
+        slides[i].classList.add("active");
+    }, 4500);
+});
+</script>
+
+</body>
+</html>

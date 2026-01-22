@@ -1,0 +1,118 @@
+{% extends "packages/base.html" %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+
+<style>
+    .otp-container{
+        max-width:380px;
+        margin:70px auto;
+        padding:26px;
+        background:#fff;
+        border-radius:12px;
+        box-shadow:0 8px 25px rgba(0,0,0,.1);
+        text-align:center;
+    }
+
+    .otp-container h2{
+        margin-bottom:8px;
+        font-size:1.6rem;
+    }
+
+    .otp-subtext{
+        font-size:.9rem;
+        color:#555;
+        margin-bottom:18px;
+    }
+
+    .otp-input{
+        width:100%;
+        padding:14px;
+        font-size:1.2rem;
+        letter-spacing:4px;
+        text-align:center;
+        border:1px solid #ccc;
+        border-radius:8px;
+        margin-bottom:18px;
+    }
+
+    .otp-btn{
+        width:100%;
+        padding:12px;
+        background:#0d6efd;
+        color:#fff;
+        border:none;
+        border-radius:8px;
+        font-size:1rem;
+        font-weight:600;
+        cursor:pointer;
+    }
+
+    .otp-btn:hover{
+        background:#084298;
+    }
+
+    .resend{
+        margin-top:18px;
+        font-size:.9rem;
+    }
+
+    .resend a{
+        color:#0d6efd;
+        text-decoration:none;
+        font-weight:500;
+    }
+
+    .error{
+        margin-top:12px;
+        color:#dc3545;
+        font-size:.9rem;
+    }
+
+    .legal-note{
+        margin-top:20px;
+        font-size:12px;
+        color:#777;
+    }
+</style>
+
+<div class="otp-container">
+
+    <h2>Verify OTP</h2>
+
+    <div class="otp-subtext">
+        Enter the OTP sent to your mobile number
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <input
+            type="text"
+            name="otp"
+            class="otp-input"
+            placeholder="● ● ● ●"
+            maxlength="4"
+            required
+        >
+        <button type="submit" class="otp-btn">
+            Verify & Continue
+        </button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <div class="resend">
+        Didn’t receive OTP?
+        <a href="{% url 'packages:resend_otp' %}">Resend OTP</a>
+    </div>
+
+    <div class="legal-note">
+        We facilitate your test through our partner labs.
+    </div>
+
+</div>
+
+{% endblock %}
