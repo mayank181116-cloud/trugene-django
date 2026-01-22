@@ -183,7 +183,3 @@ def payment_success(request, booking_id):
 def booking_success(request):
     return render(request, 'packages/booking_success.html')
 
-from django.http import HttpResponse
-
-def test_packages(request):
-    return HttpResponse("PACKAGES URL WORKING")
